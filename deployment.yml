@@ -1,0 +1,28 @@
+---
+apiVersion: apps/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nginx-deployment-lab
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: nginx
+        env: testenv
+    spec:
+      containers:
+      - name: nginx
+        image: domecloud/openresty
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 100m
+            memory: 512Mi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+      nodeSelector:
+        failure-domain.beta.kubernetes.io/zone: asia-southeast1-b
+# kubectl exec -it xxxx -- /bin/bash

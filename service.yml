@@ -1,0 +1,15 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: nginx-deployment-lab-service
+spec:
+  selector:
+    app: nginx
+    env: testenv
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80 #Container port
+  type: LoadBalancer  #ClusterIP, LoadBalancer, NodePort
+  sessionAffinity: None # ClientIP, None

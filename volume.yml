@@ -1,0 +1,73 @@
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: ssd
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-ssd    
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: ssd-1
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+  storageClassName: ssd        
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: stadard-1
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 30Gi
+  storageClassName: standard     
+  
+---
+apiVersion: extensions/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nginx-storage-lab
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: nginx
+        env: testenv
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        # livenessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: 80
+        #   initialDelaySeconds: 3
+        #   periodSeconds: 5
+        # readinessProbe:  #Startup app
+        #   httpGet:
+        #     path: /
+        #     port: 80
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 5
+        volumeMounts:
+          - mountPath: /usr/share/nginxtest/html
+            name: vol-ssd
+      volumes:
+        - name: vol-ssd
+          persistentVolumeClaim:
+            claimName: ssd-1
+
