@@ -23,6 +23,6 @@ spec:
           requests:
             cpu: 50m
             memory: 128Mi
-      nodeSelector:
-        failure-domain.beta.kubernetes.io/zone: asia-southeast1-b
+#      nodeSelector:
+#        failure-domain.beta.kubernetes.io/zone: asia-southeast1-b
 # kubectl exec -it xxxx -- /bin/bash
